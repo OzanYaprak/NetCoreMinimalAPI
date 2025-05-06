@@ -1,0 +1,6 @@
+@Giris_HostAddress = http://localhost:5023
+
+GET {{Giris_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
