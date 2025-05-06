@@ -1,6 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection.Metadata.Ecma335;
 using Giris.Entities;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace Giris
 {
@@ -105,7 +106,23 @@ namespace Giris
             });
             app.MapPost("/Sehir", (Sehir sehir) =>
             {
+                if (sehir is null)
+                {
+                    return "Hatalý giriþ yaptýnýz";
+                }
+
                 return sehir.BilgileriYaz();
+            });
+
+            //Motosiklet
+            app.MapGet("/Motosiklet", () =>
+            {
+                var motosiklet = new Motosiklet();
+
+                var p1 = motosiklet.Marka = "Royal Enfield";
+                var p2 = motosiklet.Model = "Hunter350";
+
+                return p1 + " " + p2;
             });
 
             app.UseHttpsRedirection();
@@ -115,4 +132,6 @@ namespace Giris
             app.Run();
         }
     }
+
+
 }

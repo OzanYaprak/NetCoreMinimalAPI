@@ -18,10 +18,15 @@ namespace HttpVerbs
                 app.UseSwaggerUI();
             }
 
+
+            app.MapGet("/Hello", () => "Hello Get");
+            app.MapPost("/Hello", () => "Hello Pust");
+            app.MapPut("/Hello", () => "Hello Put");
+            app.MapDelete("/Hello", () => "Hello Delete");
+
+
             app.UseHttpsRedirection();
-
             app.UseAuthorization();
-
             app.MapControllers();
 
             app.Run();
