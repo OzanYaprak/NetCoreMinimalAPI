@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RouteHandlers", "RouteHandl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RouteParameters", "RouteParameters\RouteParameters.csproj", "{0DFC2163-01AD-4557-86BD-E12591C0DDFC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParameterBinding", "ParameterBinding\ParameterBinding.csproj", "{280492A3-BB99-4F7B-AC4D-107A448A5BFF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{0DFC2163-01AD-4557-86BD-E12591C0DDFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0DFC2163-01AD-4557-86BD-E12591C0DDFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0DFC2163-01AD-4557-86BD-E12591C0DDFC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{280492A3-BB99-4F7B-AC4D-107A448A5BFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{280492A3-BB99-4F7B-AC4D-107A448A5BFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{280492A3-BB99-4F7B-AC4D-107A448A5BFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{280492A3-BB99-4F7B-AC4D-107A448A5BFF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
