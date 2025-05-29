@@ -1,0 +1,274 @@
+using Microsoft.AspNetCore.Diagnostics;
+using System.Text.Json;
+
+namespace Swagger
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            var builder = WebApplication.CreateBuilder(args);
+
+            builder.Services.AddControllers();
+            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSwaggerGen(x =>
+            {
+                x.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+                {
+                    Title = "DotNetCoreMinimalAPI",
+                    Version = "v1",
+                    Description = "A simple example ASP.NET Core Minimal Web API",
+                    Contact = new Microsoft.OpenApi.Models.OpenApiContact
+                    {
+                        Name = "Ozan Yaprak",
+                        Email = "oznyprk@gmail.com",
+                        Url = new Uri("https://github.com/OzanYaprak")
+                    },
+                    License = new Microsoft.OpenApi.Models.OpenApiLicense
+                    {
+                        Name = "MIT License",
+                        Url = new Uri("https://opensource.org/license/mit/")
+                    },
+                    TermsOfService = new Uri("https://www.google.com.tr")
+                });
+            });
+
+            var app = builder.Build();
+
+            if (app.Environment.IsDevelopment())
+            {
+                app.UseSwagger();
+                app.UseSwaggerUI();
+            }
+
+            // Global Error Handler Middleware
+            app.UseExceptionHandler((appError) => // UseExceptionHandler, global hata yakalama middleware'idir. // Tüm hatalarý yakalar ve iþleme alýr.
+            {
+                appError.Run(async (context) => // Run, middleware'in çalýþtýrýlacaðý yerdir. // Hata oluþtuðunda bu kod bloðu çalýþýr.
+                {
+                    context.Response.StatusCode = StatusCodes.Status500InternalServerError; // Hata durum kodunu 500 Internal Server Error olarak ayarlar.
+                    context.Response.ContentType = "application/json"; // Hata mesajýnýn içeriðini JSON olarak ayarlar.
+
+                    var contextFeature = context.Features.Get<IExceptionHandlerPathFeature>(); // IExceptionHandlerPathFeature, hata ile ilgili bilgileri tutar. // Hata ile ilgili bilgileri alýr.
+
+                    if (contextFeature is not null)
+                    {
+                        context.Response.StatusCode = contextFeature.Error switch // Hata türüne göre durum kodunu ayarlar.
+                        {
+                            NotFoundException => StatusCodes.Status404NotFound, // NotFoundException durumunda 404 Not Found döndürüyoruz.
+                            BadRequestException => StatusCodes.Status400BadRequest, // BadRequestException durumunda 400 Bad Request döndürüyoruz.
+                            ArgumentOutOfRangeException => StatusCodes.Status400BadRequest, // Örnek olarak, ArgumentOutOfRangeException durumunda da 400 Bad Request döndürüyoruz.
+                            _ => StatusCodes.Status500InternalServerError, // Diðer tüm durumlarda 500 Internal Server Error döndürüyoruz.
+                        };
+
+                        //context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+
+                        // await context.Response.WriteAsync("An error has been occured beybi !"); // Custom hata mesajý, tüm hatalarda bu mesajý döner.
+                        // await context.Response.WriteAsync(contextFeature.Error.Message); // Hatanýn türüne baðlý olarak deðiþken hata mesajlarý alýnýr.
+
+                        // Hata detaylarýný JSON formatýnda döndürür.
+                        await context.Response.WriteAsync((new ErrorDetails // ErrorDetails sýnýfý, hata detaylarýný tutar.
+                        {
+                            Message = contextFeature.Error.Message,
+                            ErrorDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+                            StatusCode = context.Response.StatusCode
+                        }).ToString()); // ToString metodu, ErrorDetails sýnýfýný JSON formatýnda serileþtirir. // Bu sayede hata detaylarýný JSON formatýnda döndürürüz.
+                    }
+                });
+            });
+
+            // GET
+            app.MapGet("/api/error", () =>
+            {
+                throw new Exception("An error has been occured.");
+            }).Produces<ErrorDetails>(StatusCodes.Status500InternalServerError) // Produces, Swagger'da bu endpoint'in hata kodunu ve hata mesajýný gösterir.
+            .ExcludeFromDescription(); // ExcludeFromDescription, Swagger'da bu endpoint'i gizler. // Bu endpoint'i Swagger'da görmek istemiyorsanýz kullanabilirsiniz.
+
+            // GET
+            app.MapGet("/api/books", () =>
+            {
+                return Book.List().Count > 0 ? Book.List() : throw new BookNotFoundException(0); // Eðer kitap listesi boþ deðilse, kitap listesini döndürür. // Eðer kitap listesi boþsa, hata fýrlatýr.
+            })
+                .Produces<List<Book>>(StatusCodes.Status200OK) // Produces, Swagger'da bu endpoint'in baþarýlý durum kodunu ve baþarýlý durum mesajýný gösterir.
+                .Produces(StatusCodes.Status204NoContent) // Eðer kitap listesi boþsa, 204 No Content durum kodunu döndürür.
+                .WithTags("CRUD", "GETs"); // WithTags, Swagger'da bu endpoint'in hangi gruba ait olduðunu gösterir. // Bu endpoint'i "CRUD" ve "GETs" gruplarýna ekler.
+
+            // GET BY ID
+            app.MapGet("/api/books/{id}", (int id) =>
+            {
+                if (!(id > 0 && id <= 1000))
+                {
+                    throw new BookBadRequestException(new Book { Id = id, Title = "Invalid ID", Price = 0 }); // Eðer ID 0'dan küçük veya 1000'den büyükse, hata fýrlatýr.
+                }
+
+                var book = Book.List().Where(x => x.Id.Equals(id)).FirstOrDefault(); // Kitap listesinden ID'ye göre kitap arar.
+
+                return book is not null ? Results.Ok(book) : throw new BookNotFoundException(id); // Eðer kitap bulunursa, kitap bilgilerini döndürür. // Eðer kitap bulunamazsa, hata fýrlatýr.
+
+                //return Results.Ok(Book.ListWithId(id)); // Book sýnýfýndaki ListWithId metodunu kullanarak ID'ye göre kitap döndürür.
+            })
+                .Produces<Book>(StatusCodes.Status200OK) // Produces, Swagger'da bu endpoint'in baþarýlý durum kodunu ve baþarýlý durum mesajýný gösterir.
+                .Produces<ErrorDetails>(StatusCodes.Status404NotFound) // Eðer kitap bulunamazsa, 404 Not Found durum kodunu döndürür.
+                .WithTags("GETs"); // WithTags, Swagger'da bu endpoint'in hangi gruba ait olduðunu gösterir. // Bu endpoint'i "GETs" grubuna ekler.
+
+            // POST
+            app.MapPost("/api/books", (Book InsertBook) =>
+            {
+                // Temel alan kontrolleri
+                if (string.IsNullOrWhiteSpace(InsertBook.Title) || InsertBook.Price <= 0)
+                {
+                    throw new BookBadRequestException(InsertBook);
+                }
+                if (InsertBook.Title.Contains("string"))
+                {
+                    throw new BookBadRequestException(InsertBook);
+                }
+
+                InsertBook.Id = Book.List().Max(x => x.Id) + 1; // Yeni kitap için ID'yi otomatik olarak artýrýr. // Kitap listesindeki en yüksek ID'ye 1 ekler.
+                Book.CreateBook(InsertBook);
+
+                return Results.Created($"/api/books/{InsertBook.Id}", InsertBook); // 201
+            })
+                .Produces<Book>(StatusCodes.Status201Created) // Produces, Swagger'da bu endpoint'in baþarýlý durum kodunu ve baþarýlý durum mesajýný gösterir.
+                .WithTags("CRUD"); // WithTags, Swagger'da bu endpoint'in hangi gruba ait olduðunu gösterir. // Bu endpoint'i "CRUD" grubuna ekler.
+
+            // PUT
+            app.MapPut("/api/books/{id}", (int id, Book updateBook) =>
+            {
+                if (!(id > 0 && id <= 1000))
+                {
+                    throw new BookBadRequestException(new Book { Id = id, Title = "Invalid ID", Price = 0 }); // Eðer ID 0'dan küçük veya 1000'den büyükse, hata fýrlatýr.
+                }
+
+                var book = Book.List().Where(x => x.Id.Equals(id)).FirstOrDefault();
+
+                if (book is null)
+                {
+                    return Results.NotFound(); // 404
+                }
+
+                book.Title = updateBook.Title;
+                book.Price = updateBook.Price;
+
+                return Results.Ok(book); // 200
+            })
+                .Produces<Book>(StatusCodes.Status200OK)
+                .Produces<ErrorDetails>(StatusCodes.Status404NotFound)
+                .Produces<ErrorDetails>(StatusCodes.Status400BadRequest)
+                .WithTags("CRUD"); // WithTags, Swagger'da bu endpoint'in hangi gruba ait olduðunu gösterir. // Bu endpoint'i "CRUD" grubuna ekler.
+
+            // DELETE
+            app.MapDelete("/api/books/{id}", (int id) =>
+            {
+                if (!(id > 0 && id <= 1000))
+                {
+                    throw new BookBadRequestException(new Book { Id = id, Title = "Invalid ID", Price = 0 }); // Eðer ID 0'dan küçük veya 1000'den büyükse, hata fýrlatýr.
+                }
+
+                var book = Book.List().Where(x => x.Id.Equals(id)).FirstOrDefault();
+
+                if (book is null)
+                {
+                    throw new BookNotFoundException(id); // Eðer kitap bulunamazsa, hata fýrlatýr.
+                }
+
+                Book.List().Remove(book);
+
+                return Results.NoContent(); // 204
+            })
+                .Produces(StatusCodes.Status204NoContent)
+                .Produces<ErrorDetails>(StatusCodes.Status404NotFound)
+                .Produces<ErrorDetails>(StatusCodes.Status400BadRequest)
+                .WithTags("CRUD"); // WithTags, Swagger'da bu endpoint'in hangi gruba ait olduðunu gösterir. // Bu endpoint'i "CRUD" grubuna ekler.
+
+            // GET SEARCH
+            app.MapGet("/api/books/search", (string? title) =>
+            {
+                var books = string.IsNullOrEmpty(title) ? Book.List() : Book.List().Where(x => x.Title is not null && x.Title.Contains(title, StringComparison.OrdinalIgnoreCase)).ToList(); // Eðer title boþ ise, tüm kitaplarý döndürür. // Eðer title dolu ise, kitap listesinden title'a göre arama yapar. // StringComparison.OrdinalIgnoreCase, büyük/küçük harf duyarsýz arama yapar.
+
+                return books.Any() ? Results.Ok(books) : Results.NotFound(); // Eðer kitap listesi boþ deðilse, kitap listesini döndürür. // Eðer kitap listesi boþsa, 404 Not Found durum kodunu döndürür.
+            })
+                .Produces<List<Book>>(StatusCodes.Status200OK)
+                .Produces(StatusCodes.Status204NoContent)
+                .Produces<ErrorDetails>(StatusCodes.Status400BadRequest)
+                .WithTags("GETs");
+
+            app.UseHttpsRedirection();
+            app.UseAuthorization();
+            app.MapControllers();
+
+            app.Run();
+        }
+    }
+
+    public abstract class NotFoundException : Exception
+    {
+        protected NotFoundException(string message) : base(message)
+        {
+        }
+    }
+
+    public abstract class BadRequestException : Exception
+    {
+        protected BadRequestException(string message) : base(message)
+        {
+        }
+    }
+
+    public sealed class BookNotFoundException : NotFoundException
+    {
+        public BookNotFoundException(int id) : base($"The book with {id} could not be found!")
+        {
+        }
+    }
+
+    public sealed class BookBadRequestException : BadRequestException
+    {
+        public BookBadRequestException(Book book) : base($"Bad Request")
+        {
+        }
+    }
+
+    public class ErrorDetails
+    {
+        public int StatusCode { get; set; }
+        public string? Message { get; set; }
+        public string? ErrorDate { get; set; }
+
+        public override string ToString() // ToString yazýldýðýnda ErrorDetails sýnýfýný Serialize edecektir.
+        {
+            return JsonSerializer.Serialize(this);
+        }
+    }
+
+    public class Book
+    {
+        public int Id { get; set; }
+        public String? Title { get; set; }
+        public Decimal Price { get; set; }
+
+        private static List<Book> BookList = new List<Book>
+        {
+            new Book(){ Id=1, Title="Suç ve Ceza", Price=400 },
+            new Book(){ Id=2, Title="Beyaz Zambaklar Ülkesinde", Price=300 },
+            new Book(){ Id=3, Title="Hayvanlar Çiftliði", Price=230 },
+        };
+
+        public static List<Book> List()
+        {
+            return BookList;
+        }
+
+        public static Book ListWithId(int id)
+        {
+            Book book = BookList.Where(x => x.Id.Equals(id)).FirstOrDefault();
+
+            return book is not null ? book : throw new KeyNotFoundException($"ID {id} olan kitap bulunamadý.");
+        }
+
+        public static void CreateBook(Book book)
+        {
+            BookList.Add(book);
+        }
+    }
+}

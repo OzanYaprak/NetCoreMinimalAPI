@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlobalErrorHandler", "Globa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cors", "Cors\Cors.csproj", "{178F6511-036A-4BC0-9D72-A1AD953B2CBF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Swagger", "Swagger\Swagger.csproj", "{B3BE65A6-B116-46B0-8DF2-862E9AE7AD87}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,6 +59,10 @@ Global
 		{178F6511-036A-4BC0-9D72-A1AD953B2CBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{178F6511-036A-4BC0-9D72-A1AD953B2CBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{178F6511-036A-4BC0-9D72-A1AD953B2CBF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B3BE65A6-B116-46B0-8DF2-862E9AE7AD87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B3BE65A6-B116-46B0-8DF2-862E9AE7AD87}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B3BE65A6-B116-46B0-8DF2-862E9AE7AD87}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B3BE65A6-B116-46B0-8DF2-862E9AE7AD87}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
