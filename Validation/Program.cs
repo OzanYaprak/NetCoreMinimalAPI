@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Diagnostics;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
 
-namespace Swagger
+namespace Validation
 {
     public class Program
     {
@@ -58,6 +59,9 @@ namespace Swagger
                             NotFoundException => StatusCodes.Status404NotFound, // NotFoundException durumunda 404 Not Found döndürüyoruz.
                             BadRequestException => StatusCodes.Status400BadRequest, // BadRequestException durumunda 400 Bad Request döndürüyoruz.
                             ArgumentOutOfRangeException => StatusCodes.Status400BadRequest, // Örnek olarak, ArgumentOutOfRangeException durumunda da 400 Bad Request döndürüyoruz.
+                            KeyNotFoundException => StatusCodes.Status404NotFound, // KeyNotFoundException durumunda 404 Not Found döndürüyoruz.
+                            ArgumentException => StatusCodes.Status400BadRequest, // ArgumentException durumunda 400 Bad Request döndürüyoruz.
+                            ValidationException => StatusCodes.Status422UnprocessableEntity, // ValidationException durumunda 422 Unprocessable Entity döndürüyoruz.
                             _ => StatusCodes.Status500InternalServerError, // Diðer tüm durumlarda 500 Internal Server Error döndürüyoruz.
                         };
 
@@ -114,6 +118,15 @@ namespace Swagger
             // POST
             app.MapPost("/api/books", (Book InsertBook) =>
             {
+                var validationResults = new List<ValidationResult>(); // ValidationResult, doðrulama sonuçlarýný tutar.
+                var context = new ValidationContext(InsertBook); // ValidationContext, doðrulama baðlamýný tutar.
+                bool isValid = Validator.TryValidateObject(InsertBook, context, validationResults, true); // Validator, doðrulama iþlemini yapar. // TryValidateObject, doðrulama iþlemini yapar ve sonuçlarý validationResults listesine ekler. // true parametresi, tüm özelliklerin doðrulanmasýný saðlar.
+
+                if (!isValid)
+                {
+                    return Results.UnprocessableEntity(validationResults); // 422
+                }
+
                 // Temel alan kontrolleri
                 if (string.IsNullOrWhiteSpace(InsertBook.Title) || InsertBook.Price <= 0)
                 {
@@ -130,6 +143,7 @@ namespace Swagger
                 return Results.Created($"/api/books/{InsertBook.Id}", InsertBook); // 201
             })
                 .Produces<Book>(StatusCodes.Status201Created) // Produces, Swagger'da bu endpoint'in baþarýlý durum kodunu ve baþarýlý durum mesajýný gösterir.
+                .Produces<List<ValidationResult>>(StatusCodes.Status422UnprocessableEntity) // Eðer kitap doðrulama hatasý varsa, 422 Unprocessable Entity durum kodunu döndürür.
                 .WithTags("CRUD"); // WithTags, Swagger'da bu endpoint'in hangi gruba ait olduðunu gösterir. // Bu endpoint'i "CRUD" grubuna ekler.
 
             // PUT
@@ -138,6 +152,15 @@ namespace Swagger
                 if (!(id > 0 && id <= 1000))
                 {
                     throw new BookBadRequestException(new Book { Id = id, Title = "Invalid ID", Price = 0 }); // Eðer ID 0'dan küçük veya 1000'den büyükse, hata fýrlatýr.
+                }
+
+                var validationResults = new List<ValidationResult>(); // ValidationResult, doðrulama sonuçlarýný tutar.
+                var context = new ValidationContext(updateBook); // ValidationContext, doðrulama baðlamýný tutar.
+                bool isValid = Validator.TryValidateObject(updateBook, context, validationResults, true); // Validator, doðrulama iþlemini yapar. // TryValidateObject, doðrulama iþlemini yapar ve sonuçlarý validationResults listesine ekler. // true parametresi, tüm özelliklerin doðrulanmasýný saðlar.
+
+                if (!isValid)
+                {
+                    return Results.UnprocessableEntity(validationResults.First().ErrorMessage); // 422
                 }
 
                 var book = Book.List().Where(x => x.Id.Equals(id)).FirstOrDefault();
@@ -155,6 +178,7 @@ namespace Swagger
                 .Produces<Book>(StatusCodes.Status200OK)
                 .Produces<ErrorDetails>(StatusCodes.Status404NotFound)
                 .Produces<ErrorDetails>(StatusCodes.Status400BadRequest)
+                .Produces<ErrorDetails>(StatusCodes.Status422UnprocessableEntity)
                 .WithTags("CRUD"); // WithTags, Swagger'da bu endpoint'in hangi gruba ait olduðunu gösterir. // Bu endpoint'i "CRUD" grubuna ekler.
 
             // DELETE
@@ -243,8 +267,14 @@ namespace Swagger
 
     public class Book
     {
+        [Required]
         public int Id { get; set; }
+
+        [MinLength(2, ErrorMessage = "Min. lenght must be 2")]
+        [MaxLength(250, ErrorMessage = "Max. lenght must be 250")]
         public String? Title { get; set; }
+
+        [Range(10, 100)]
         public Decimal Price { get; set; }
 
         private static List<Book> BookList = new List<Book>
