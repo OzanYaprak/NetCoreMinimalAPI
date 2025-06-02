@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.EntityFrameworkCore;
+using RepositoryManagement.Repositories;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
 
-namespace DependencyInjectionAndInterfaces
+namespace RepositoryManagement
 {
     public class Program
     {
@@ -35,6 +37,9 @@ namespace DependencyInjectionAndInterfaces
             });
 
             builder.Services.AddSingleton<IBookService, BookService>(); // Dependency Injection ile BookService'i IBookService arayüzüne baðlar. // Singleton olarak ekler, yani uygulama ömrü boyunca tek bir örnek kullanýlýr.
+
+            builder.Services.AddDbContext<RepositoryContext>(options =>
+            options.UseSqlite(builder.Configuration.GetConnectionString("SqliteConnectionString"))); // RepositoryContext sýnýfýný DbContext olarak kullanýr. // Sqlite veritabaný baðlantý dizesini alýr.
 
             var app = builder.Build();
             if (app.Environment.IsDevelopment())
@@ -281,17 +286,6 @@ namespace DependencyInjectionAndInterfaces
     public class BookService : IBookService
     {
         private readonly List<Book> _books;
-
-        public BookService()
-        {
-            // Örnek kitap verileri
-            _books = new List<Book>()
-            {
-                new Book(){ Id=1, Title="Suç ve Ceza", Price=400 },
-                new Book(){ Id=2, Title="Beyaz Zambaklar Ülkesinde", Price=300 },
-                new Book(){ Id=3, Title="Hayvanlar Çiftliði", Price=230 },
-            };
-        }
 
         public List<Book> GetBooks() => _books; // Kitap listesini döndürür.
 
