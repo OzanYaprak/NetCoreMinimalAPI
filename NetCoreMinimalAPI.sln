@@ -29,6 +29,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DependencyInjectionAndInter
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RepositoryManagement", "RepositoryManagement\RepositoryManagement.csproj", "{CAC59A38-9B15-422C-AEE6-E9BD620D9D1A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ORM", "ORM\ORM.csproj", "{A824F796-4E73-4405-A4BB-64FA7B64990A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -87,6 +89,10 @@ Global
 		{CAC59A38-9B15-422C-AEE6-E9BD620D9D1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CAC59A38-9B15-422C-AEE6-E9BD620D9D1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CAC59A38-9B15-422C-AEE6-E9BD620D9D1A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A824F796-4E73-4405-A4BB-64FA7B64990A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A824F796-4E73-4405-A4BB-64FA7B64990A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A824F796-4E73-4405-A4BB-64FA7B64990A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A824F796-4E73-4405-A4BB-64FA7B64990A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
