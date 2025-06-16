@@ -4,6 +4,7 @@ using ORM.Repositories;
 
 namespace ORM.Services
 {
+
     public class BookServiceV2 : IBookService
     {
         #region // Constructor
@@ -29,6 +30,7 @@ namespace ORM.Services
         {
             var book = _repositoryContext.Books.FirstOrDefault(x => x.Id == id) ?? throw new BookNotFoundException(id);
             _repositoryContext.Remove(book); // Kitabý kitap listesinden siler.
+            _repositoryContext.SaveChanges();
         }
 
         public Book? GetBookById(int id) => _repositoryContext.Books.FirstOrDefault(x => x.Id == id) ?? throw new BookNotFoundException(id); // ID'ye göre kitabý arar, eðer bulunamazsa hata fýrlatýr.
@@ -46,6 +48,8 @@ namespace ORM.Services
 
             existingBook.Title = book.Title;
             existingBook.Price = book.Price;
+
+            _repositoryContext.SaveChanges();
 
             return existingBook; // Güncellenmiþ kitabý döndürür.
         }

@@ -39,7 +39,9 @@ namespace ORM
                 });
             });
 
-            builder.Services.AddSingleton<IBookService, BookService>(); // Dependency Injection ile BookService'i IBookService arayüzüne baðlar. // Singleton olarak ekler, yani uygulama ömrü boyunca tek bir örnek kullanýlýr.
+            // ESKÝ builder.Services.AddSingleton<IBookService, BookService>(); // Dependency Injection ile BookServiceV2'i IBookService arayüzüne baðlar. // Singleton olarak ekler, yani uygulama ömrü boyunca tek bir örnek kullanýlýr.
+            builder.Services.AddScoped<IBookService, BookServiceV3>(); // Dependency Injection ile BookServiceV3'i IBookService arayüzüne baðlar. // Scoped olarak ekler, yani her HTTP isteði için yeni bir örnek oluþturulur.
+            builder.Services.AddScoped<BookRepository>(); // Dependency Injection ile BookRepository'i ekler. // Scoped olarak ekler, yani her HTTP isteði için yeni bir örnek oluþturulur.
 
             builder.Services.AddDbContext<RepositoryContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("sqlConnection"))); // Dependency Injection ile RepositoryContext'i ekler. // UseSqlServer, SQL Server veritabaný baðlantýsýný kullanýr. // builder.Configuration.GetConnectionString("sqlConnection"), appsettings.json dosyasýndaki sqlConnection baðlantý dizesini alýr.
