@@ -31,6 +31,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RepositoryManagement", "Rep
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ORM", "ORM\ORM.csproj", "{A824F796-4E73-4405-A4BB-64FA7B64990A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoMapperProject", "AutoMapper\AutoMapperProject.csproj", "{D1578089-CD7A-4993-B75B-D7D383382070}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -93,6 +95,10 @@ Global
 		{A824F796-4E73-4405-A4BB-64FA7B64990A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A824F796-4E73-4405-A4BB-64FA7B64990A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A824F796-4E73-4405-A4BB-64FA7B64990A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D1578089-CD7A-4993-B75B-D7D383382070}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1578089-CD7A-4993-B75B-D7D383382070}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1578089-CD7A-4993-B75B-D7D383382070}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1578089-CD7A-4993-B75B-D7D383382070}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
