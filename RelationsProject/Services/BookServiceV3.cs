@@ -1,12 +1,12 @@
-using RelationsProject.Abstracts;
-using RelationsProject.Entities;
-using RelationsProject.Repositories;
-using RelationsProject.DTOs;
-using RelationsProject.Configuration;
-using System.ComponentModel.DataAnnotations;
 using AutoMapper;
 using Microsoft.IdentityModel.Tokens;
+using RelationsProject.Abstracts;
+using RelationsProject.ConfigurationExtensions;
+using RelationsProject.DTOs.BookDTOs;
+using RelationsProject.Entities;
 using RelationsProject.Exceptions.BookExceptions;
+using RelationsProject.Repositories;
+using System.ComponentModel.DataAnnotations;
 
 namespace RelationsProject.Services
 {

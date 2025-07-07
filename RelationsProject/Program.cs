@@ -11,7 +11,7 @@ var builder = WebApplication.CreateBuilder(args); // Web uygulamasý için yapýlan
 builder.Services.AddControllers(); // Controller'larý ekler. // Bu metot, API controller'larýný ekler ve HTTP isteklerini yönlendirmek için gerekli middleware'i yapýlandýrýr.
 builder.Services.AddEndpointsApiExplorer(); // Endpoint'leri keþfetmek için gerekli hizmetleri ekler. // Bu metot, API endpoint'lerini keþfetmek için gerekli hizmetleri ekler.
 
-#region Configuration And Extensions
+#region Custom Configuration And Extensions
 
 builder.Services.AddCustomCors(); // CORS yapýlandýrmasýný ekler. // Bu metot, CORS politikalarýný yapýlandýrýr. // Tüm kaynaklara izin verir.
 builder.Services.AddCustomSwagger(); // Swagger yapýlandýrmasýný ekler. // Bu metot, Swagger'ý yapýlandýrýr ve kullanýma hazýr hale getirir.
@@ -20,7 +20,7 @@ builder.Services.RepositoryIocRegisters(); // Repository kayýtlarýný ekler. // B
 builder.Services.CustomIocRegisters(); // Özel IOC kayýtlarýný ekler. // Bu metot, uygulama için özel servisleri IOC konteynerine kaydeder. // Örneðin, AutoMapper'ý yapýlandýrýr ve kullanýma hazýr hale getirir.
 builder.Services.UseSqlServerContext(builder.Configuration); // SQL Server veritabaný baðlantýsýný yapýlandýrýr. // Bu metot, appsettings.json dosyasýndaki ConnectionStrings bölümünden veritabaný baðlantý dizesini alýr ve DbContext'i yapýlandýrýr.
 
-#endregion Configuration And Extensions
+#endregion Custom Configuration And Extensions
 
 var app = builder.Build(); // Uygulamayý oluþturur. // Bu metot, uygulama için gerekli middleware'leri ve hizmetleri yapýlandýrýr. // Örneðin, CORS, Swagger, hata iþleme middleware'lerini ekler.
 if (app.Environment.IsDevelopment()) // Uygulama geliþtirme ortamýnda ise Swagger'ý kullanýr. // Bu, uygulamanýn geliþtirme aþamasýnda Swagger arayüzünü gösterir.
@@ -29,7 +29,7 @@ if (app.Environment.IsDevelopment()) // Uygulama geliþtirme ortamýnda ise Swagge
     app.UseSwaggerUI();
 }
 
-// GET ERROR
+// GET ERROR // TEST METHOD
 app.MapGet("/api/error", () =>
 {
     throw new Exception("An error has been occured.");
@@ -38,15 +38,9 @@ app.MapGet("/api/error", () =>
 
 #region Book API Endpoint Extensions
 
-app.GetAllBooks(); // Bu metotlar, kitaplarý listelemek için kullanýlýr. // Kitap listesini döndürür. // Eðer kitap listesi boþ ise, hata fýrlatýr.
-app.GetBookById(); // Bu metotlar, kitaplarý listelemek ve ID'ye göre kitap aramak için kullanýlýr. // Bu metotlar, API endpoint'lerini haritalar ve gerekli middleware'leri ekler.
-app.PostBook(); // Bu metotlar, yeni kitap eklemek için kullanýlýr. // Kitap ekler ve baþarýlý durum kodunu döndürür. // Eðer kitap doðrulama hatasý varsa, hata mesajýný döndürür.
-app.PutBook(); // Bu metotlar, kitap güncellemek için kullanýlýr. // Kitap günceller ve baþarýlý durum kodunu döndürür. // Eðer kitap bulunamazsa, hata fýrlatýr. // Eðer kitap doðrulama hatasý varsa, hata mesajýný döndürür.
-app.DeleteBook(); // Bu metotlar, kitap silmek için kullanýlýr. // Kitap siler ve baþarýlý durum kodunu döndürür. // Eðer kitap bulunamazsa, hata fýrlatýr.
-app.SearchBooks(); // Bu metotlar, kitaplarý aramak için kullanýlýr. // Kitaplarý arar ve baþarýlý durum kodunu döndürür. // Eðer kitap bulunamazsa, hata fýrlatýr.
+app.BookAPIs(); // Kitap API endpoint'lerini ekler. // Bu metot, kitaplarla ilgili API endpoint'lerini ekler. // Örneðin, kitaplarý listeleme, kitap ekleme, kitap güncelleme ve kitap silme iþlemlerini yapar.
 
 #endregion Book API Endpoint Extensions
-
 
 app.UseCors("All"); // Use CORS policy // Use "AllowSpecificOrigin" to restrict to a specific origin
 app.UseCustomExceptionHandler(); // Özel hata iþleyicisini kullanýr. // Bu metot, global hata yakalama middleware'ini ekler. // Hatalarý JSON formatýnda döndürür. // Bu sayede hata mesajlarýný daha okunabilir hale getirir.

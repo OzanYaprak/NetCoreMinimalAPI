@@ -1,5 +1,5 @@
 using RelationsProject.Entities;
-using RelationsProject.DTOs;
+using RelationsProject.DTOs.BookDTOs;
 
 namespace RelationsProject.Abstracts
 {

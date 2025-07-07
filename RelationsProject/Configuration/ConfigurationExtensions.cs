@@ -10,7 +10,7 @@ using System.Runtime.CompilerServices;
 using RelationsProject.Repositories.Context;
 using RelationsProject.Exceptions.BookExceptions;
 
-namespace RelationsProject.Configuration
+namespace RelationsProject.ConfigurationExtensions
 {
     public static class ConfigurationExtensions
     {

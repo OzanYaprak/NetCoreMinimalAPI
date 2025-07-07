@@ -1,6 +1,6 @@
 ﻿using RelationsProject.Entities;
 
-namespace RelationsProject.DTOs
+namespace RelationsProject.DTOs.BookDTOs
 {
     public record BookDTO : BookDTOBase
     {

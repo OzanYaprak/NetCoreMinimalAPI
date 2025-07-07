@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace RelationsProject.DTOs
+namespace RelationsProject.DTOs.BookDTOs
 {
     // 'abstract': Bu anahtar kelime, sınıfın veya record'un doğrudan örneklendirilemeyeceğini belirtir.
     // Yani, 'abstract' olarak işaretlenen bir sınıftan veya record'dan nesne oluşturulamaz.
@@ -13,9 +13,9 @@ namespace RelationsProject.DTOs
     {
         [MinLength(2, ErrorMessage = "Min. lenght must be 2")]
         [MaxLength(250, ErrorMessage = "Max. lenght must be 250")]
-        public String Title { get; init; }
+        public string Title { get; init; }
 
         [Range(10, 100)]
-        public Decimal Price { get; init; }
+        public decimal Price { get; init; }
     }
 }

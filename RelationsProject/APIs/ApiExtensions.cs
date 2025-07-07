@@ -1,5 +1,5 @@
 ﻿using RelationsProject.Abstracts;
-using RelationsProject.DTOs;
+using RelationsProject.DTOs.BookDTOs;
 using RelationsProject.Entities;
 using RelationsProject.Exceptions.BookExceptions;
 using System.ComponentModel.DataAnnotations;
@@ -33,7 +33,6 @@ namespace RelationsProject.APIs
                 .Produces<Book>(StatusCodes.Status200OK) // Produces, Swagger'da bu endpoint'in başarılı durum kodunu ve başarılı durum mesajını gösterir.
                 .Produces<ErrorDetails>(StatusCodes.Status404NotFound) // Eğer kitap bulunamazsa, 404 Not Found durum kodunu döndürür.
                 .WithTags("GETs"); // WithTags, Swagger'da bu endpoint'in hangi gruba ait olduğunu gösterir. // Bu endpoint'i "GETs" grubuna ekler.
-
         }
 
         public static void PostBook(this WebApplication app)
