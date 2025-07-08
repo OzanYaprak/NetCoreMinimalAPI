@@ -5,6 +5,8 @@ namespace RelationsProject.Abstracts
 {
     public interface ICategoryService
     {
+        public int Count { get; }
+
         List<CategoryDTO> GetCategories();
 
         CategoryDTO GetCategoryById(int id);

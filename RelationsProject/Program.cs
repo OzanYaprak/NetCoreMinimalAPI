@@ -1,10 +1,6 @@
-using RelationsProject.Abstracts;
 using RelationsProject.APIs;
-using RelationsProject.Configuration;
-using RelationsProject.DTOs;
+using RelationsProject.ConfigurationExtensions;
 using RelationsProject.Entities;
-using RelationsProject.Exceptions.BookExceptions;
-using System.ComponentModel.DataAnnotations;
 
 var builder = WebApplication.CreateBuilder(args); // Web uygulamasý için yapýlandýrma oluþturur. // Bu metot, uygulama için gerekli yapýlandýrmalarý yapar. // Örneðin, appsettings.json dosyasýný okur ve gerekli hizmetleri ekler.
 
@@ -41,6 +37,12 @@ app.MapGet("/api/error", () =>
 app.BookAPIs(); // Kitap API endpoint'lerini ekler. // Bu metot, kitaplarla ilgili API endpoint'lerini ekler. // Örneðin, kitaplarý listeleme, kitap ekleme, kitap güncelleme ve kitap silme iþlemlerini yapar.
 
 #endregion Book API Endpoint Extensions
+
+#region Category API Endpoint Extensions
+
+app.CategoryAPIs();
+
+#endregion Category API Endpoint Extensions
 
 app.UseCors("All"); // Use CORS policy // Use "AllowSpecificOrigin" to restrict to a specific origin
 app.UseCustomExceptionHandler(); // Özel hata iþleyicisini kullanýr. // Bu metot, global hata yakalama middleware'ini ekler. // Hatalarý JSON formatýnda döndürür. // Bu sayede hata mesajlarýný daha okunabilir hale getirir.

@@ -24,6 +24,8 @@ namespace RelationsProject.Services
 
         #endregion // Constructor
 
+        public int Count => _categoryRepository.GetAll().Count; // Kitap sayýsýný döndürür.
+
         public Category CreateCategory(CategoryDTOForInsertion categoryDTOForInsertion)
         {
             Validate(categoryDTOForInsertion);
@@ -37,7 +39,6 @@ namespace RelationsProject.Services
 
         public void DeleteCategory(int id)
         {
-            id.ValidateIdInRange(); // ID'nin 0'dan büyük ve 1000'den küçük olduðunu kontrol eder. Eðer deðilse, BookBadRequestException fýrlatýr.
             _categoryRepository.Delete(id); // Kitabý kitap listesinden siler.
         }
 
@@ -50,15 +51,12 @@ namespace RelationsProject.Services
 
         public CategoryDTO GetCategoryById(int id)
         {
-            id.ValidateIdInRange();
-
             var category = _categoryRepository.Get(id);
             return _mapper.Map<CategoryDTO>(category);
         }
 
         public Category UpdateCategory(int id, CategoryDTOForUpdate categoryDTOForUpdate)
         {
-            id.ValidateIdInRange();
             Validate(categoryDTOForUpdate);
 
             var mappedCategory = _mapper.Map<Category>(categoryDTOForUpdate);

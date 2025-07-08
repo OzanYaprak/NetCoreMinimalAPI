@@ -117,12 +117,16 @@ namespace RelationsProject.ConfigurationExtensions
         public static IServiceCollection ServicesIocRegisters(this IServiceCollection services) // Bu metot, Dependency Injection (DI) ile hizmetleri kaydeder.
         {
             services.AddScoped<IBookService, BookServiceV3>(); // IBookService arayüzünü BookServiceV3 sınıfına bağlar. // Scoped olarak ekler, yani her HTTP isteği için yeni bir örnek oluşturulur.
+            services.AddScoped<ICategoryService, CategoryService>(); // ICategoryService arayüzünü CategoryService sınıfına bağlar. // Scoped olarak ekler, yani her HTTP isteği için yeni bir örnek oluşturulur.
+
             return services; // IServiceCollection arayüzünü döndürür, böylece metot zincirleme (fluent) olarak kullanılabilir.
         }
 
         public static IServiceCollection RepositoryIocRegisters(this IServiceCollection services) // Bu metot, Dependency Injection (DI) ile hizmetleri kaydeder.
         {
             services.AddScoped<BookRepository>(); // BookRepository sınıfını DI konteynerine ekler. // Scoped olarak ekler, yani her HTTP isteği için yeni bir örnek oluşturulur.
+            services.AddScoped<CategoryRepository>(); // CategoryRepository sınıfını DI konteynerine ekler. // Scoped olarak ekler, yani her HTTP isteği için yeni bir örnek oluşturulur.
+
             return services; // IServiceCollection arayüzünü döndürür, böylece metot zincirleme (fluent) olarak kullanılabilir.
         }
 

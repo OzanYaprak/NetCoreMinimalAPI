@@ -2,6 +2,6 @@
 {
     public record CategoryDTOForUpdate : CategoryDTOBase
     {
-        public int Id { get; set; }
+        public int CategoryId { get; set; }
     }
 }

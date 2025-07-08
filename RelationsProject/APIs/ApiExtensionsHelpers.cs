@@ -11,5 +11,15 @@
             app.DeleteBook();
             app.SearchBooks();
         }
+
+        public static void CategoryAPIs(this WebApplication app)
+        {
+            app.GetAllCategories();
+            app.GetCategoryById();
+            app.PostCategory();
+            app.PutCategory();
+            app.DeleteCategory();
+            app.SearchCategory();
+        }
     }
 }
