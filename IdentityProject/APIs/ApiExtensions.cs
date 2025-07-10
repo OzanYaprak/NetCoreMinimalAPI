@@ -1,11 +1,11 @@
-﻿using RelationsProject.Abstracts;
-using RelationsProject.DTOs.BookDTOs;
-using RelationsProject.DTOs.CategoryDTOs;
-using RelationsProject.Entities;
-using RelationsProject.Exceptions.BookExceptions;
+﻿using IdentityProject.Abstracts;
+using IdentityProject.DTOs.BookDTOs;
+using IdentityProject.DTOs.CategoryDTOs;
+using IdentityProject.Entities;
+using IdentityProject.Exceptions.BookExceptions;
 using System.ComponentModel.DataAnnotations;
 
-namespace RelationsProject.APIs
+namespace IdentityProject.APIs
 {
     public static class ApiExtensions
     {
