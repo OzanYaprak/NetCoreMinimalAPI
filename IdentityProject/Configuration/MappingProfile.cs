@@ -2,6 +2,7 @@
 using IdentityProject.Entities;
 using IdentityProject.DTOs.BookDTOs;
 using IdentityProject.DTOs.CategoryDTOs;
+using IdentityProject.DTOs.IdentityDTOs;
 
 namespace IdentityProject.Configuration
 {
@@ -17,6 +18,8 @@ namespace IdentityProject.Configuration
             CreateMap<CategoryDTO, Category>().ReverseMap();
             CreateMap<CategoryDTOForInsertion, Category>().ReverseMap();
             CreateMap<CategoryDTOForUpdate, Category>().ReverseMap();
+
+            CreateMap<UserDTOForRegistration, User>().ReverseMap();
         }
     }
 }

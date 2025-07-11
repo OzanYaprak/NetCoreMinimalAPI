@@ -12,7 +12,7 @@ namespace IdentityProject.Services
 {
     public class BookServiceV3 : IBookService
     {
-        #region // Constructor
+        #region Constructor
 
         private readonly BookRepository _bookRepository;
         private readonly IMapper _mapper; // AutoMapper arayüzü, DTO'larý ve Entity'leri dönüþtürmek için kullanýlýr.
@@ -23,7 +23,7 @@ namespace IdentityProject.Services
             _mapper = mapper;
         }
 
-        #endregion // Constructor
+        #endregion Constructor
 
         public int Count => _bookRepository.GetAll().Count; // Kitap sayýsýný döndürür.
 

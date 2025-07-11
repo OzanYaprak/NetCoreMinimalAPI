@@ -2,6 +2,7 @@
 using IdentityProject.Entities;
 using System.Security.AccessControl;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace IdentityProject.Repositories.Context
 {
@@ -62,6 +63,19 @@ namespace IdentityProject.Repositories.Context
                     Title = "Entity Framework Core",
                     Price = 49.99m,
                     CategoryId = 3 // Entity Framework Core kitabı, "Database" kategorisine aittir.
+                }
+            );
+
+            modelBuilder.Entity<IdentityRole>().HasData(
+                new IdentityRole
+                {
+                    Name = "Admin",
+                    NormalizedName = "ADMIN"
+                },
+                new IdentityRole
+                {
+                    Name = "User",
+                    NormalizedName = "USER"
                 }
             );
         }

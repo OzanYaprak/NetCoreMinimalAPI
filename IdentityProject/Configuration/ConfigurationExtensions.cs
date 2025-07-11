@@ -8,6 +8,7 @@ using IdentityProject.Services;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query.Internal;
 using System.ComponentModel.DataAnnotations;
 
 namespace IdentityProject.ConfigurationExtensions
@@ -136,7 +137,13 @@ namespace IdentityProject.ConfigurationExtensions
             return services; // IServiceCollection arayüzünü döndürür, böylece metot zincirleme (fluent) olarak kullanılabilir.
         }
 
-        public static IServiceCollection ConfigureIdentity(this IServiceCollection services)
+        public static IServiceCollection AddAuthenticationService(this IServiceCollection services)
+        {
+            services.AddScoped<IAuthService, AuthenticationService>(); // IAuthService arayüzünü AuthenticationService sınıfına bağlar. // Scoped olarak ekler, yani her HTTP isteği için yeni bir örnek oluşturulur.
+            return services; // IServiceCollection arayüzünü döndürür, böylece metot zincirleme (fluent) olarak kullanılabilir.
+        }
+
+        public static void ConfigureIdentity(this IServiceCollection services)
         {
             var builder = services.AddIdentity<User, IdentityRole>(options =>
             {
@@ -145,7 +152,12 @@ namespace IdentityProject.ConfigurationExtensions
                 options.Password.RequireUppercase = true; // Parolada büyük harf gerektirir.
                 options.Password.RequiredLength = 6; // Parolanın minimum uzunluğunu 6 karakter olarak ayarlar.
                 options.Password.RequireNonAlphanumeric = false; // Parolada özel karakter gerektirmez.
-            });
+                options.User.RequireUniqueEmail = true; // Kullanıcıların benzersiz e-posta adresine sahip olmasını gerektirir.
+                options.SignIn.RequireConfirmedAccount = false; // Hesap onayını zorunlu kılmaz.
+                options.SignIn.RequireConfirmedPhoneNumber = false; // Telefon numarası onayını zorunlu kılmaz.
+            })
+                .AddEntityFrameworkStores<RepositoryContext>()
+                .AddDefaultTokenProviders();
         }
     }
 }

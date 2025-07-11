@@ -1,8 +1,10 @@
 ﻿using IdentityProject.Abstracts;
 using IdentityProject.DTOs.BookDTOs;
 using IdentityProject.DTOs.CategoryDTOs;
+using IdentityProject.DTOs.IdentityDTOs;
 using IdentityProject.Entities;
 using IdentityProject.Exceptions.BookExceptions;
+using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 
 namespace IdentityProject.APIs
@@ -145,5 +147,24 @@ namespace IdentityProject.APIs
         }
 
         #endregion CATEGORY API ENDPOINTS
+
+        #region AUTHENTICATION API ENDPOINTS
+
+        public static void AuthenticationAPIs(this WebApplication app)
+        {
+            app.MapPost("/api/register", async (UserDTOForRegistration userDTO, IAuthService authService) =>
+            {
+                var result = await authService.RegisterUserAsync(userDTO);
+                return result.Succeeded
+                    ? Results.Ok(new { Message = "User registered successfully.", result })
+                    : Results.BadRequest(new { Message = "User registration failed.", Errors = result.Errors.Select(e => e.Description) });
+            })
+                .Produces<IdentityResult>(StatusCodes.Status200OK)
+                .Produces<ErrorDetails>(StatusCodes.Status400BadRequest)
+                .WithTags("Authentication");
+        }
+
+        #endregion AUTHENTICATION API ENDPOINTS
     }
 }
+
