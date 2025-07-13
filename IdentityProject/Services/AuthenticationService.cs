@@ -35,5 +35,18 @@ namespace IdentityProject.Services
 
             return result;
         }
+
+
+        public Task<IdentityResult> RegisterAdminAsync(AdminDTOForRegistration adminDto)
+        {
+            var user = _mapper.Map<User>(adminDto);
+            user.Role = "Admin";
+            var result = _userManager.CreateAsync(user, adminDto.Password);
+            if (result.Result.Succeeded)
+            {
+                _userManager.AddToRolesAsync(user, new string[] { "Admin" });
+            }
+            return result;
+        }
     }
 }

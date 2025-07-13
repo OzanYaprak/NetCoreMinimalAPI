@@ -152,7 +152,7 @@ namespace IdentityProject.APIs
 
         public static void AuthenticationAPIs(this WebApplication app)
         {
-            app.MapPost("/api/register", async (UserDTOForRegistration userDTO, IAuthService authService) =>
+            app.MapPost("/api/registeruser", async (UserDTOForRegistration userDTO, IAuthService authService) =>
             {
                 var result = await authService.RegisterUserAsync(userDTO);
                 return result.Succeeded
@@ -161,7 +161,18 @@ namespace IdentityProject.APIs
             })
                 .Produces<IdentityResult>(StatusCodes.Status200OK)
                 .Produces<ErrorDetails>(StatusCodes.Status400BadRequest)
-                .WithTags("Authentication");
+                .WithTags("Authentication For User");
+            
+            app.MapPost("/api/registeradmin", async (AdminDTOForRegistration adminDTO, IAuthService authService) =>
+            {
+                var result = await authService.RegisterAdminAsync(adminDTO);
+                return result.Succeeded
+                    ? Results.Ok(new { Message = "Admin registered successfully.", result })
+                    : Results.BadRequest(new { Message = "Admin registration failed.", Errors = result.Errors.Select(e => e.Description) });
+            })
+                .Produces<IdentityResult>(StatusCodes.Status200OK)
+                .Produces<ErrorDetails>(StatusCodes.Status400BadRequest)
+                .WithTags("Authentication For Admin");
         }
 
         #endregion AUTHENTICATION API ENDPOINTS

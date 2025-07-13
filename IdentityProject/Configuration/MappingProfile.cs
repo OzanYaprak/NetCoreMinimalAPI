@@ -20,6 +20,7 @@ namespace IdentityProject.Configuration
             CreateMap<CategoryDTOForUpdate, Category>().ReverseMap();
 
             CreateMap<UserDTOForRegistration, User>().ReverseMap();
+            CreateMap<AdminDTOForRegistration, User>().ReverseMap();
         }
     }
 }

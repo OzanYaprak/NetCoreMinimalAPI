@@ -2,7 +2,7 @@
 
 namespace IdentityProject.DTOs.IdentityDTOs
 {
-    public record UserDTOForRegistration
+    public record AdminDTOForRegistration
     {
         public string FirstName { get; init; }
         public string LastName { get; init; }
@@ -14,6 +14,5 @@ namespace IdentityProject.DTOs.IdentityDTOs
         public string Password { get; init; }
         public string Email { get; init; }
         public string PhoneNumber { get; init; }
-        //public ICollection<string> Roles { get; init; } = new List<string> { "User" }; // Default role for new users
     }
 }
