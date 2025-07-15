@@ -22,6 +22,7 @@ namespace IdentityProject.APIs
                     ? Results.Ok(bookService.GetBooks())
                     : throw new BookNotFoundException(0);
             })
+                .RequireAuthorization() // Bu endpoint'e erişim için Admin rolü gereklidir.
                 .Produces<List<BookDTO>>(StatusCodes.Status200OK)
                 .Produces(StatusCodes.Status204NoContent)
                 .WithTags("CRUD", "GETs");

@@ -22,7 +22,10 @@ builder.Services.UseSqlServerContext(builder.Configuration); // SQL Server verit
 #region Identity Configuration
 
 builder.Services.ConfigureIdentity(); // ASP.NET Core Identity yapýlandýrmasýný ekler. // Bu metot, ASP.NET Core Identity'yi yapýlandýrýr. // Örneðin, kullanýcý kimlik doðrulama ve yetkilendirme iþlemlerini yapar.
-builder.Services.AddAuthentication(); // Kimlik doðrulama hizmetini ekler. // Bu metot, kimlik doðrulama iþlemlerini yapar. // Örneðin, JWT token ile kimlik doðrulama iþlemlerini yapar.
+
+//builder.Services.AddAuthentication(); // Kimlik doðrulama hizmetini ekler. // Bu metot, kimlik doðrulama iþlemlerini yapar. // Örneðin, JWT token ile kimlik doðrulama iþlemlerini yapar.
+builder.Services.ConfigureJWT(builder.Configuration); // JWT yapýlandýrmasýný ekler. // Bu metot, JWT token'larý için gerekli yapýlandýrmalarý yapar. // Örneðin, JWT token'ýn imzalanmasý için gerekli anahtarlarý ve süreleri ayarlar.
+
 builder.Services.AddAuthorization(); // Yetkilendirme hizmetini ekler. // Bu metot, yetkilendirme iþlemlerini yapar. // Örneðin, kullanýcýlarýn yetkilerini kontrol eder.
 builder.Services.AddAuthenticationService(); // Kimlik doðrulama servisini ekler. // Bu metot, IAuthService arayüzünü uygulayan AuthenticationService sýnýfýný IOC konteynerine kaydeder. // Böylece, kimlik doðrulama iþlemlerini yapabiliriz.
 

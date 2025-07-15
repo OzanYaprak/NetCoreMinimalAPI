@@ -5,11 +5,14 @@ using IdentityProject.Exceptions.BookExceptions;
 using IdentityProject.Repositories;
 using IdentityProject.Repositories.Context;
 using IdentityProject.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query.Internal;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace IdentityProject.ConfigurationExtensions
 {
@@ -158,6 +161,31 @@ namespace IdentityProject.ConfigurationExtensions
             })
                 .AddEntityFrameworkStores<RepositoryContext>()
                 .AddDefaultTokenProviders();
+        }
+
+        public static void ConfigureJWT(this IServiceCollection services, IConfiguration configuration)
+        {
+            var jwtSettings = configuration.GetSection("JwtSettings"); // JwtSettings bölümünü yapılandırmadan alır.
+            var secretKey = jwtSettings.GetValue<string>("SecretKey"); // SecretKey değerini alır.
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme; // JWT Bearer
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme; // JWT Bearer
+            })
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true, // İmzalayanı doğrular.
+                    ValidateAudience = true, // Alıcıyı doğrular.
+                    ValidateLifetime = true, // Token'ın süresini doğrular.
+                    ValidateIssuerSigningKey = true, // İmza anahtarını doğrular.
+                    ValidIssuer = jwtSettings.GetValue<string>("ValidIssuer"), // Geçerli imzacıyı alır.
+                    ValidAudience = jwtSettings.GetValue<string>("ValidAudience"), // Geçerli alıcıyı alır.
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)), // İmza anahtarını alır.
+                };
+            });
         }
     }
 }
