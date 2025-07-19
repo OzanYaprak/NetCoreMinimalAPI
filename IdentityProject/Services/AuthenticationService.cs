@@ -50,7 +50,6 @@ namespace IdentityProject.Services
             return result;
         }
 
-
         public async Task<IdentityResult> RegisterAdminAsync(AdminDTOForRegistration adminDto)
         {
             Validate(adminDto); // Admin DTO'sunu doğrular.
@@ -83,7 +82,7 @@ namespace IdentityProject.Services
             // Kullanıcı adı ve şifre boş değilse, kullanıcıyı bulmaya çalışır.
             _user = await _userManager.FindByNameAsync(userDto.Username);
 
-            bool result = (_user is not null && await _userManager.CheckPasswordAsync(_user, userDto.Password)); // Kullanıcı bulunursa ve şifre doğruysa, result true olur. // _user is not null, kullanıcı bulunmuşsa true döner. // await _userManager.CheckPasswordAsync, kullanıcının şifresini kontrol eder.
+            bool result = (_user is not null && await _userManager.CheckPasswordAsync(_user, userDto.Password));  // await _userManager.CheckPasswordAsync, kullanıcının şifresini kontrol eder.
             if (result)
             {
                 _user.LastLoginDate = DateTime.Now; // Kullanıcı giriş yaptıktan sonra son giriş tarihini günceller.

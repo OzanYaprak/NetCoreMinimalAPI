@@ -4,6 +4,7 @@ using IdentityProject.DTOs.CategoryDTOs;
 using IdentityProject.DTOs.IdentityDTOs;
 using IdentityProject.Entities;
 using IdentityProject.Exceptions.BookExceptions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 
@@ -13,10 +14,11 @@ namespace IdentityProject.APIs
     {
         #region BOOK API ENDPOINTS
 
+        //[Authorize]
         public static void BookAPIs(this WebApplication app)
         {
             // GetAllBooks
-            app.MapGet("/api/books", (IBookService bookService) =>
+            app.MapGet("/api/books",[Authorize(Roles ="Admin,User")] (IBookService bookService) =>
             {
                 return bookService.Count > 0
                     ? Results.Ok(bookService.GetBooks())
@@ -163,7 +165,7 @@ namespace IdentityProject.APIs
                 .Produces<IdentityResult>(StatusCodes.Status200OK)
                 .Produces<ErrorDetails>(StatusCodes.Status400BadRequest)
                 .WithTags("Authentication For User");
-            
+
             app.MapPost("/api/registeradmin", async (AdminDTOForRegistration adminDTO, IAuthService authService) =>
             {
                 var result = await authService.RegisterAdminAsync(adminDTO);
@@ -174,6 +176,22 @@ namespace IdentityProject.APIs
                 .Produces<IdentityResult>(StatusCodes.Status200OK)
                 .Produces<ErrorDetails>(StatusCodes.Status400BadRequest)
                 .WithTags("Authentication For Admin");
+
+            app.MapPost("/api/login", async (UserDTOForAuthentication userDTO, IAuthService authService) =>
+            {
+                if (await authService.ValidateUserCredentialsAsync(userDTO))
+                {
+                    return Results.Ok(new
+                    {
+                        Message = "Login successful.",
+                        Token = await authService.CreateJwtTokenAsync()
+                    });
+                }
+                return Results.Unauthorized(); // 401
+            })
+                .Produces(StatusCodes.Status200OK)
+                .Produces<ErrorDetails>(StatusCodes.Status401Unauthorized)
+                .WithTags("API Login");
         }
 
         #endregion AUTHENTICATION API ENDPOINTS

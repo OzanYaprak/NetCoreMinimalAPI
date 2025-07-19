@@ -59,11 +59,12 @@ app.CategoryAPIs();
 
 #endregion Category API Endpoint Extensions
 
-#region Identity API Endpoint Extensions
+#region Identity-Authentication API Endpoint Extensions
 
 app.AuthenticationAPIs(); // Kimlik doðrulama API endpoint'lerini ekler. // Bu metot, kullanýcý kaydý, giriþ ve çýkýþ iþlemlerini yapar. // Örneðin, kullanýcý kaydý için RegisterUser endpoint'ini ekler. // Kullanýcý giriþi için Login endpoint'ini ekler. // Kullanýcý çýkýþý için Logout endpoint'ini ekler.
 
-#endregion Identity API Endpoint Extensions
+#endregion Identity-Authentication API Endpoint Extensions
+
 
 app.UseCors("All"); // Use CORS policy // Use "AllowSpecificOrigin" to restrict to a specific origin
 app.UseCustomExceptionHandler(); // Özel hata iþleyicisini kullanýr. // Bu metot, global hata yakalama middleware'ini ekler. // Hatalarý JSON formatýnda döndürür. // Bu sayede hata mesajlarýný daha okunabilir hale getirir.
@@ -71,4 +72,6 @@ app.UseHttpsRedirection(); // HTTPS yönlendirmesini kullanýr. // HTTP isteklerin
 app.UseAuthorization(); // Yetkilendirmeyi kullanýr. // Bu middleware, yetkilendirme iþlemlerini yapar. // Kullanýcýlarýn yetkilerini kontrol eder.
 app.UseAuthentication(); // Kimlik doðrulamayý kullanýr. // Bu middleware, kimlik doðrulama iþlemlerini yapar. // Kullanýcýlarýn kimlik bilgilerini kontrol eder.
 app.MapControllers(); // Controller'larý haritalar. // Bu middleware, controller'larý HTTP isteklerine yönlendirir. // Controller'lar, HTTP isteklerini iþler ve yanýt döner.
+
 app.Run(); // Uygulamayý baþlatýr. // Uygulama, HTTP isteklerini dinler ve yönlendirir.
+
