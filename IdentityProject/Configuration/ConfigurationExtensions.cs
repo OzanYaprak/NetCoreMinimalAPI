@@ -13,6 +13,8 @@ using Microsoft.EntityFrameworkCore.Query.Internal;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Http.Features;
 
 namespace IdentityProject.ConfigurationExtensions
 {
@@ -86,26 +88,47 @@ namespace IdentityProject.ConfigurationExtensions
         {
             services.AddSwaggerGen(x =>
             {
-                x.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+                x.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Title = "DotNetCoreMinimalAPI",
                     Version = "v1",
                     Description = "A simple example ASP.NET Core Minimal Web API",
-                    Contact = new Microsoft.OpenApi.Models.OpenApiContact
+                    Contact = new OpenApiContact
                     {
                         Name = "Ozan Yaprak",
                         Email = "oznyprk@gmail.com",
                         Url = new Uri("https://github.com/OzanYaprak")
                     },
-                    License = new Microsoft.OpenApi.Models.OpenApiLicense
+                    License = new OpenApiLicense
                     {
                         Name = "MIT License",
                         Url = new Uri("https://opensource.org/license/mit/")
                     },
                     TermsOfService = new Uri("https://www.google.com.tr")
                 });
+                x.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme // Swagger'da Bearer token için güvenlik tanımı ekler.
+                {
+                    In = ParameterLocation.Header, // Güvenlik tanımının başlıkta olduğunu belirtir.
+                    Description = "JWT Authorization header using the Bearer scheme.",
+                    Name = "Authorization", // Başlık adını Authorization olarak ayarlar.
+                    Type = SecuritySchemeType.ApiKey, // Güvenlik tanımının türünü ApiKey olarak ayarlar.
+                    Scheme = "Bearer" // Bearer şemasını kullanır.
+                });
+                x.AddSecurityRequirement(new OpenApiSecurityRequirement // Swagger'da güvenlik gereksinimi ekler.
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer" // Bearer token için güvenlik tanımını referans alır.
+                            }
+                        },
+                        new string[] {}
+                    }
+                });
             });
-
             return services; // IServiceCollection arayüzünü döndürür, böylece metot zincirleme (fluent) olarak kullanılabilir.
         }
 

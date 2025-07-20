@@ -14,11 +14,10 @@ namespace IdentityProject.APIs
     {
         #region BOOK API ENDPOINTS
 
-        //[Authorize]
         public static void BookAPIs(this WebApplication app)
         {
             // GetAllBooks
-            app.MapGet("/api/books",[Authorize(Roles ="Admin,User")] (IBookService bookService) =>
+            app.MapGet("/api/books", [Authorize(Roles ="Admin")] (IBookService bookService) =>
             {
                 return bookService.Count > 0
                     ? Results.Ok(bookService.GetBooks())
@@ -30,7 +29,7 @@ namespace IdentityProject.APIs
                 .WithTags("CRUD", "GETs");
 
             // GetBookById
-            app.MapGet("/api/books/{id}", (int id, IBookService bookService) =>
+            app.MapGet("/api/books/{id}", [Authorize(Roles = "Admin,User")] (int id, IBookService bookService) =>
             {
                 var book = bookService.GetBookById(id); // Kitap listesinden ID'ye göre kitap arar.
                 return Results.Ok(book); // Eğer kitap bulunursa, kitap bilgilerini döndürür. // Eğer kitap bulunamazsa, hata fırlatır.
@@ -42,7 +41,7 @@ namespace IdentityProject.APIs
                 .WithTags("GETs"); // WithTags, Swagger'da bu endpoint'in hangi gruba ait olduğunu gösterir. // Bu endpoint'i "GETs" grubuna ekler.
 
             // PostBook
-            app.MapPost("/api/books", (BookDtoForInsertion InsertBook, IBookService bookService) =>
+            app.MapPost("/api/books", [Authorize(Roles = "Admin")] (BookDtoForInsertion InsertBook, IBookService bookService) =>
             {
                 var book = bookService.CreateBook(InsertBook);
                 return Results.Created($"/api/books/{book.Id}", InsertBook); // 201
@@ -52,7 +51,7 @@ namespace IdentityProject.APIs
                 .WithTags("CRUD"); // WithTags, Swagger'da bu endpoint'in hangi gruba ait olduğunu gösterir. // Bu endpoint'i "CRUD" grubuna ekler.
 
             // PutBook
-            app.MapPut("/api/books/{id}", (int id, BookDtoForUpdate updateBook, IBookService bookService) =>
+            app.MapPut("/api/books/{id}", [Authorize(Roles = "Admin")] (int id, BookDtoForUpdate updateBook, IBookService bookService) =>
             {
                 Book book = bookService.UpdateBook(id, updateBook);
                 return Results.Ok(book); // 200
@@ -64,7 +63,7 @@ namespace IdentityProject.APIs
                 .WithTags("CRUD"); // WithTags, Swagger'da bu endpoint'in hangi gruba ait olduğunu gösterir. // Bu endpoint'i "CRUD" grubuna ekler.
 
             // DeleteBook
-            app.MapDelete("/api/books/{id}", (int id, IBookService bookService) =>
+            app.MapDelete("/api/books/{id}", [Authorize(Roles = "Admin")] (int id, IBookService bookService) =>
             {
                 bookService.DeleteBook(id); // Kitabı kitap listesinden siler.
                 return Results.NoContent(); // 204
@@ -75,7 +74,7 @@ namespace IdentityProject.APIs
                 .WithTags("CRUD"); // WithTags, Swagger'da bu endpoint'in hangi gruba ait olduğunu gösterir. // Bu endpoint'i "CRUD" grubuna ekler.
 
             // SearchBooks
-            app.MapGet("/api/books/search", (string? title, IBookService bookService) =>
+            app.MapGet("/api/books/search", [Authorize(Roles = "Admin,User")] (string? title, IBookService bookService) =>
             {
                 var books = string.IsNullOrEmpty(title) ? bookService.GetBooks() : bookService.GetBooks().Where(x => x.Title is not null && x.Title.Contains(title, StringComparison.OrdinalIgnoreCase)).ToList(); // Eğer title boş ise, tüm kitapları döndürür. // Eğer title dolu ise, kitap listesinden title'a göre arama yapar. // StringComparison.OrdinalIgnoreCase, büyük/küçük harf duyarsız arama yapar.
 
@@ -184,7 +183,7 @@ namespace IdentityProject.APIs
                     return Results.Ok(new
                     {
                         Message = "Login successful.",
-                        Token = await authService.CreateJwtTokenAsync()
+                        Token = await authService.CreateJwtTokenAsync(true)
                     });
                 }
                 return Results.Unauthorized(); // 401
@@ -192,6 +191,14 @@ namespace IdentityProject.APIs
                 .Produces(StatusCodes.Status200OK)
                 .Produces<ErrorDetails>(StatusCodes.Status401Unauthorized)
                 .WithTags("API Login");
+
+            app.MapPost("/api/refresh-token", async (TokenDTO tokenDTO, IAuthService authService) =>
+            {
+                var tokenDTOToReturn = await authService.CreateRefreshTokenAsync(tokenDTO);
+                return tokenDTOToReturn != null ? Results.Ok(tokenDTOToReturn) : Results.BadRequest(new { Message = "Invalid refresh token." });
+            })
+               .Produces(StatusCodes.Status200OK)
+               .WithTags("Refresh Token");
         }
 
         #endregion AUTHENTICATION API ENDPOINTS
