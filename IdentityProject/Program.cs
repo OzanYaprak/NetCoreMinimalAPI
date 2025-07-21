@@ -69,8 +69,8 @@ app.AuthenticationAPIs(); // Kimlik doðrulama API endpoint'lerini ekler. // Bu m
 app.UseCors("All"); // Use CORS policy // Use "AllowSpecificOrigin" to restrict to a specific origin
 app.UseCustomExceptionHandler(); // Özel hata iþleyicisini kullanýr. // Bu metot, global hata yakalama middleware'ini ekler. // Hatalarý JSON formatýnda döndürür. // Bu sayede hata mesajlarýný daha okunabilir hale getirir.
 app.UseHttpsRedirection(); // HTTPS yönlendirmesini kullanýr. // HTTP isteklerini HTTPS isteklerine yönlendirir.
-app.UseAuthorization(); // Yetkilendirmeyi kullanýr. // Bu middleware, yetkilendirme iþlemlerini yapar. // Kullanýcýlarýn yetkilerini kontrol eder.
 app.UseAuthentication(); // Kimlik doðrulamayý kullanýr. // Bu middleware, kimlik doðrulama iþlemlerini yapar. // Kullanýcýlarýn kimlik bilgilerini kontrol eder.
+app.UseAuthorization(); // Yetkilendirmeyi kullanýr. // Bu middleware, yetkilendirme iþlemlerini yapar. // Kullanýcýlarýn yetkilerini kontrol eder.
 app.MapControllers(); // Controller'larý haritalar. // Bu middleware, controller'larý HTTP isteklerine yönlendirir. // Controller'lar, HTTP isteklerini iþler ve yanýt döner.
 
 app.Run(); // Uygulamayý baþlatýr. // Uygulama, HTTP isteklerini dinler ve yönlendirir.

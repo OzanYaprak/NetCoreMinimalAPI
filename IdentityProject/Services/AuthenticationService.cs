@@ -45,7 +45,7 @@ namespace IdentityProject.Services
             var result = await _userManager.CreateAsync(user, userDto.Password);
             if (result.Succeeded)
             {
-                await _userManager.AddToRolesAsync(user, new string[] { "User" });
+                await _userManager.AddToRolesAsync(user, userDto.Roles);
             }
 
             return result;
@@ -67,7 +67,7 @@ namespace IdentityProject.Services
             var result = await _userManager.CreateAsync(user, adminDto.Password);
             if (result.Succeeded)
             {
-                await _userManager.AddToRolesAsync(user, new string[] { "Admin" });
+                await _userManager.AddToRolesAsync(user, adminDto.Roles);
             }
             return result;
         }
@@ -155,14 +155,14 @@ namespace IdentityProject.Services
         private ClaimsPrincipal GetPrincipalFromExpiredToken(string token)
         {
             var jwtSettings = _configuration.GetSection("JwtSettings"); // JWT ayarlarını alır. // JwtSettings, appsettings.json dosyasındaki JwtSettings bölümünü temsil eder.
-            var secretKey = jwtSettings["secretKey"]; // SecretKey, JWT'nin imzalanması için kullanılan simetrik bir güvenlik anahtarıdır.
+            var secretKey = jwtSettings["SecretKey"]; // SecretKey, JWT'nin imzalanması için kullanılan simetrik bir güvenlik anahtarıdır.
 
             var tokenValidationParameters = new TokenValidationParameters
             {
                 ValidateIssuer = true, // Sağlayıcının doğrulanmasını sağlar.
                 ValidateAudience = true, // Hedef kitlenin doğrulanmasını sağlar.
-                ValidIssuer = jwtSettings["validIssuer"], // Geçerli verici (issuer) ayarlanır.
-                ValidAudience = jwtSettings["validAudience"], // Geçerli hedef kitle (audience) ayarlanır.
+                ValidIssuer = jwtSettings["ValidIssuer"], // Geçerli verici (issuer) ayarlanır.
+                ValidAudience = jwtSettings["ValidAudience"], // Geçerli hedef kitle (audience) ayarlanır.
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)), // JWT'nin imzalanması için kullanılan simetrik güvenlik anahtarı ayarlanır.
                 ValidateIssuerSigningKey = true, // İmza anahtarının doğrulanmasını sağlar.
                 ValidateLifetime = false, // Token'ın ömrünün doğrulanmasını devre dışı bırakır. Bu, süresi dolmuş token'ların da işlenebilmesini sağlar.
@@ -237,7 +237,7 @@ namespace IdentityProject.Services
         private SigningCredentials GetSigningCredentials()
         {
             var jwtSettings = _configuration.GetSection("JwtSettings"); // JWT ayarlarını alır. // JwtSettings, appsettings.json dosyasındaki JwtSettings bölümünü temsil eder.
-            var key = Encoding.UTF8.GetBytes(jwtSettings.GetValue<string>("SecretKey")); // SecretKey, JWT'nin imzalanması için kullanılan simetrik bir güvenlik anahtarıdır. // Encoding.UTF8.GetBytes, string'i byte dizisine dönüştürür.
+            var key = Encoding.UTF8.GetBytes(jwtSettings["SecretKey"]); // SecretKey, JWT'nin imzalanması için kullanılan simetrik bir güvenlik anahtarıdır. // Encoding.UTF8.GetBytes, string'i byte dizisine dönüştürür.
             var secretKey = new SymmetricSecurityKey(key); // SecretKey, JWT'nin imzalanması için kullanılan simetrik bir güvenlik anahtarıdır.
 
             return new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256); // HmacSha256, JWT'nin imzalanması için kullanılan algoritmadır.

@@ -14,5 +14,7 @@ namespace IdentityProject.DTOs.IdentityDTOs
         public string Password { get; init; }
         public string Email { get; init; }
         public string PhoneNumber { get; init; }
+        public ICollection<String>? Roles { get; init; }
+
     }
 }
