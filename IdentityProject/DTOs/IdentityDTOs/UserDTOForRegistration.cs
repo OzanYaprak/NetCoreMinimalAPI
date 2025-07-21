@@ -15,5 +15,6 @@ namespace IdentityProject.DTOs.IdentityDTOs
         public string Email { get; init; }
         public string PhoneNumber { get; init; }
         //public ICollection<string> Roles { get; init; } = new List<string> { "User" }; // Default role for new users
+        public ICollection<String>? Roles { get; init; }
     }
 }

@@ -17,7 +17,7 @@ namespace IdentityProject.APIs
         public static void BookAPIs(this WebApplication app)
         {
             // GetAllBooks
-            app.MapGet("/api/books", [Authorize(Roles ="Admin")] (IBookService bookService) =>
+            app.MapGet("/api/books", [Authorize] (IBookService bookService) =>
             {
                 return bookService.Count > 0
                     ? Results.Ok(bookService.GetBooks())

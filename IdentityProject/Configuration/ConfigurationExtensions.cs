@@ -189,7 +189,7 @@ namespace IdentityProject.ConfigurationExtensions
         public static void ConfigureJWT(this IServiceCollection services, IConfiguration configuration)
         {
             var jwtSettings = configuration.GetSection("JwtSettings"); // JwtSettings bölümünü yapılandırmadan alır.
-            var secretKey = jwtSettings.GetValue<string>("SecretKey"); // SecretKey değerini alır.
+            var secretKey = jwtSettings["secretKey"]; // SecretKey değerini alır.
 
             services.AddAuthentication(options =>
             {
@@ -204,8 +204,8 @@ namespace IdentityProject.ConfigurationExtensions
                     ValidateAudience = true, // Alıcıyı doğrular.
                     ValidateLifetime = true, // Token'ın süresini doğrular.
                     ValidateIssuerSigningKey = true, // İmza anahtarını doğrular.
-                    ValidIssuer = jwtSettings.GetValue<string>("ValidIssuer"), // Geçerli imzacıyı alır.
-                    ValidAudience = jwtSettings.GetValue<string>("ValidAudience"), // Geçerli alıcıyı alır.
+                    ValidIssuer = jwtSettings["validIssuer"], // Geçerli imzacıyı alır.
+                    ValidAudience = jwtSettings["validAudience"], // Geçerli alıcıyı alır.
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)), // İmza anahtarını alır.
                 };
             });
